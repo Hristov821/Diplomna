@@ -33,15 +33,3 @@ class Login(MethodView):
         
         tk = create_access_token(identity=token)
         return jsonify(access_token=tk), 200
-
-    def put(self):
-        """ Responds to PUT requests """
-        return "Responding to a PUT request"
-
-    def patch(self):
-        """ Responds to PATCH requests """
-        return "Responding to a PATCH request"
-
-    def delete(self, entity):
-        """ Responds to DELETE requests """
-        return "Responding to a DELETE request"

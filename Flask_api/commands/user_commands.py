@@ -34,6 +34,28 @@ RETURN n
     result = app.config["NEO4J_GRAPH"].run(command, username=username, email=email, password=pasword_hash).evaluate()
     return result
     
+def create_user_follows_relationship(follower, followed, app=app):
+    command ="""
+MATCH (u1:User {username:$follower})
+MATCH (u2:User {username:$followed})
+MERGE (u1)-[f:FOLLOWS]->(u2)
+ON CREATE SET f.timestamp = timestamp()
+"""
+
+    graph = app.config["NEO4J_GRAPH"]
+    result = graph.run(command, follower=follower, followed=followed).data()
+    return result
+
+def create_user_rating_relationship(username, movie_title, rating, app=app):
+    command ="""
+MATCH (u:User {username:$username})
+MATCH (m:Movie {title:$movie_title})
+MERGE (u)-[r:RATING]->(m)
+ON MATCH SET r.timestamp = timestamp(), r.value = toInteger($rating)
+ON CREATE SET r.timestamp = timestamp(), r.value = toInteger($rating)
+"""
+
     
-
-
+    graph = app.config["NEO4J_GRAPH"]
+    result = graph.run(command, username=username, movie_title=movie_title, rating=rating).data()
+    return result
