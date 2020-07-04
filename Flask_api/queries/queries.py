@@ -50,9 +50,13 @@ MATCH (user:User {username: $username})
 return user.password as PASSWORD 
 """
    graph = app.config["NEO4J_GRAPH"]
-   result = graph.run(query, username=username).data()[0]["PASSWORD"]
+   result = graph.run(query, username=username).data()
    
-   if result and bcrypt.check_password_hash(result, password) == True:
+   if len(result) == 0:
+      return False
+   
+   hashed_password = result[0]["PASSWORD"]
+   if result and bcrypt.check_password_hash(hashed_password, password) == True:
       return True
    return False
 

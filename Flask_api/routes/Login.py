@@ -9,10 +9,6 @@ from flask import redirect
 from queries import validate_password, get_email
 
 class Login(MethodView):
-    
-    def get(self):
-        return redirect("https://www.google.com/", 302)
-
     def post(self):
         if not request.is_json:
             return jsonify({"msg": "Missing JSON in request"}), 400

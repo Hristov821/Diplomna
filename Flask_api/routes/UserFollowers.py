@@ -3,11 +3,12 @@ from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
 )
-from flask import jsonify
+from flask import jsonify, request
 from queries import get_followers
 
 class UserFollowers(MethodView):
-    def get(self,username=None):
+    def get(self):
+        username = request.args.get("username", None)
         if username is None:
             username = get_jwt_identity().get("username", None)
         

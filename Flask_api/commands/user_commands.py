@@ -55,7 +55,6 @@ ON MATCH SET r.timestamp = timestamp(), r.value = toInteger($rating)
 ON CREATE SET r.timestamp = timestamp(), r.value = toInteger($rating)
 """
 
-    
     graph = app.config["NEO4J_GRAPH"]
     result = graph.run(command, username=username, movie_title=movie_title, rating=rating).data()
     return result

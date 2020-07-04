@@ -3,12 +3,13 @@ from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
 )
-from flask import jsonify
+from flask import jsonify, request
 from queries import get_following
 from commands import create_user_follows_relationship
 
 class UserFollowing(MethodView):
-    def get(self,username=None):
+    def get(self):
+        username = request.args.get("username", None)
         if username is None:
             username = get_jwt_identity().get("username", None)
         
@@ -16,7 +17,8 @@ class UserFollowing(MethodView):
 
         return jsonify(following=following), 200
     
-    def post(self,user_to_follow):
+    def post(self):
+        user_to_follow = request.args.get("user_to_follow", None)
         if user_to_follow is None:
              return jsonify({"msg": "Missing user_to_follow in url"}), 400
         
