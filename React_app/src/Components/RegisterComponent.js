@@ -1,4 +1,10 @@
 import React from 'react';
+import postData from '../Utils/FetchUtils'
+import useRedirect from '../Utils/RedirectHook'
+import useDisplayAlert from '../Utils/AlertHook'
+
+import displayAlert from '../Utils/Common'
+
 import {
     Form,
     Input,
@@ -9,116 +15,131 @@ import {
 
 const RegisterComponent = () => {
     const [form] = Form.useForm();
+    const [_, redirect] = useRedirect()
+    const [display_alert, set_dispaly_alert] = useDisplayAlert()
 
     const onFinish = values => {
-        console.log('Received values of form: ', values);
+        const url = "api/register/"
+        const data = {
+            'username': values.username,
+            'password': values.password,
+            'email': values.email
+        }
+
+        postData(url, data).then(data => {
+            if (data.status === false) {
+                set_dispaly_alert({ 'display': true, 'display_msg': data.response.msg })
+                return
+            }
+            redirect('/login')
+        });
     };
 
     return (
-        <Form
-            form={form}
-            name="register"
-            onFinish={onFinish}
-            initialValues={{
-                residence: ['zhejiang', 'hangzhou', 'xihu'],
-                prefix: '86',
-            }}
-            scrollToFirstError
-        >
-            <Form.Item
-                name="email"
-                label="E-mail"
-                rules={[
-                    {
-                        type: 'email',
-                        message: 'The input is not valid E-mail!',
-                    },
-                    {
-                        required: true,
-                        message: 'Please input your E-mail!',
-                    },
-                ]}
+        <>
+            <Form
+                form={form}
+                name="register"
+                onFinish={onFinish}
+                scrollToFirstError
             >
-                <Input />
-            </Form.Item>
-
-            <Form.Item
-                name="password"
-                label="Password"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input your password!',
-                    },
-                ]}
-                hasFeedback
-            >
-                <Input.Password />
-            </Form.Item>
-
-            <Form.Item
-                name="confirm"
-                label="Confirm Password"
-                dependencies={['password']}
-                hasFeedback
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please confirm your password!',
-                    },
-                    ({ getFieldValue }) => ({
-                        validator(rule, value) {
-                            if (!value || getFieldValue('password') === value) {
-                                return Promise.resolve();
-                            }
-
-                            return Promise.reject('The two passwords that you entered do not match!');
+                <Form.Item
+                    name="email"
+                    label="E-mail"
+                    rules={[
+                        {
+                            type: 'email',
+                            message: 'The input is not valid E-mail!',
                         },
-                    }),
-                ]}
-            >
-                <Input.Password />
-            </Form.Item>
+                        {
+                            required: true,
+                            message: 'Please input your E-mail!',
+                        },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
 
-            <Form.Item
-                name="nickname"
-                label={
-                    <span>
-                        Nickname&nbsp;
+                <Form.Item
+                    name="password"
+                    label="Password"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your password!',
+                        },
+                    ]}
+                    hasFeedback
+                >
+                    <Input.Password />
+                </Form.Item>
+
+                <Form.Item
+                    name="confirm"
+                    label="Confirm Password"
+                    dependencies={['password']}
+                    hasFeedback
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please confirm your password!',
+                        },
+                        ({ getFieldValue }) => ({
+                            validator(rule, value) {
+                                if (!value || getFieldValue('password') === value) {
+                                    return Promise.resolve();
+                                }
+
+                                return Promise.reject('The two passwords that you entered do not match!');
+                            },
+                        }),
+                    ]}
+                >
+                    <Input.Password />
+                </Form.Item>
+
+                <Form.Item
+                    name="username"
+                    label={
+                        <span>
+                            username&nbsp;
             <Tooltip title="What do you want others to call you?">
-                        </Tooltip>
-                    </span>
-                }
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input your nickname!',
-                        whitespace: true,
-                    },
-                ]}
-            >
-                <Input />
-            </Form.Item>
+                            </Tooltip>
+                        </span>
+                    }
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your nickname!',
+                            whitespace: true,
+                        },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
 
-            <Form.Item
-                name="agreement"
-                valuePropName="checked"
-                rules={[
-                    {
-                        validator: (_, value) =>
-                            value ? Promise.resolve() : Promise.reject('Should accept agreement'),
-                    },
-                ]}>
-                <Checkbox>
-                    I have read the <a href="">agreement</a>
-                </Checkbox>
-            </Form.Item>
-            <Form.Item>
-                <Button type="primary" htmlType="submit">
-                    Register
+                <Form.Item
+                    name="agreement"
+                    valuePropName="checked"
+                    rules={[
+                        {
+                            validator: (_, value) =>
+                                value ? Promise.resolve() : Promise.reject('Should accept agreement'),
+                        },
+                    ]}>
+                    <Checkbox>
+                        I have read the <a href="">agreement</a>
+                    </Checkbox>
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                        Register
         </Button>
-            </Form.Item>
-        </Form>
+                </Form.Item>
+            </Form>
+            <br></br>
+            <div>{displayAlert(display_alert, set_dispaly_alert)}</div>
+        </>
     );
 };
 

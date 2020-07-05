@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { React, useState } from 'react';
+import { Alert } from 'antd';
 
 const useDisplayAlert = () => {
     const [display_alert, set_alert_status] = useState({
@@ -9,14 +10,12 @@ const useDisplayAlert = () => {
     )
 
     const set_dispaly_alert = (status) => {
-        console.log(display_alert)
         set_alert_status(
             {...display_alert, ...status}
         )
-        console.log(display_alert)
     }
 
-        return [display_alert, set_dispaly_alert];
+    return [display_alert, set_dispaly_alert];
 }
 
 export default useDisplayAlert

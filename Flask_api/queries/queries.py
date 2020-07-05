@@ -28,7 +28,8 @@ LIMIT 10
 
 def get_user_by_email(username, email, app=app):
    query = """
-MATCH (user:User {username: $username, email: $email})
+MATCH (user:User)
+where user.username = $username or user.email = $email
 return user   
 """
    graph = app.config["NEO4J_GRAPH"]

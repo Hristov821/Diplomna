@@ -9,10 +9,7 @@ from routes import UserFollowing
 from routes import UserFollowers
 from routes import UserRating
 
-app.add_url_rule("/api/register", view_func=Register.as_view("register"))
-################
-login_requered_view = jwt_required(Login_requered.as_view("login_requered"))
-app.add_url_rule("/api/login_requered", view_func=login_requered_view)
+app.add_url_rule("/api/register/", view_func=Register.as_view("register"), methods=['POST',])
 #################
 login_get = jwt_required(Login.as_view("login_get"))
 app.add_url_rule("/api/login/", view_func=login_get, methods=['GET']) 

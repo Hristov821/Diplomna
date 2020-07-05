@@ -1,9 +1,11 @@
 import React from 'react';
-import { Form, Input, Button, Alert } from 'antd';
+import { Form, Input, Button } from 'antd';
 
-import postData     from '../Utils/FetchUtils'
-import useRedirect  from '../Utils/RedirectHook'
-import useDisplayAlert  from '../Utils/AlertHook'
+import postData         from  '../Utils/FetchUtils'
+import useRedirect      from  '../Utils/RedirectHook'
+import useDisplayAlert  from  '../Utils/AlertHook'
+
+import  displayAlert    from  '../Utils/Common'
 
 const LoginComponent = () =>{
   const [_, redirect] = useRedirect()
@@ -15,32 +17,20 @@ const LoginComponent = () =>{
       'username': values.username,
       'password': values.password
     }
-    postData(url, data).then(data => {
-      console.log(data.response_status)
 
-      if (data.response_status !== '200') {
-        set_dispaly_alert({'display': true, 'display_msg':'gosho'})
+    postData(url, data).then(data => {
+      console.log(data)
+      if (data.status === false) {
+        set_dispaly_alert({'display': true, 'display_msg': data.response.msg})
         return
       }
       redirect('/register')
     });
   };
 
-  const onFinishFailed = errorInfo => {
+  const onFinishFailed = () => {
     set_dispaly_alert(true) 
   };
-
-  const displayAlert = () => {
-    if (display_alert.display === true) {
-        return <Alert
-            message={display_alert.display_type}
-            description={display_alert.display_msg}
-            type={display_alert.display_type}
-            closable
-            onClose={() => { set_dispaly_alert({'display': false}) }}
-        />
-    }
-  }
 
   return (
     <>
@@ -90,7 +80,7 @@ const LoginComponent = () =>{
         </Form.Item>
       </Form>
       <br></br>
-      <div>{displayAlert()}</div>
+        <div>{displayAlert(display_alert, set_dispaly_alert)}</div>
       </>
   );
 }

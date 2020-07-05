@@ -1,4 +1,4 @@
-const postData = async function postData(url = '', data = {}) {
+const postData = async function post(url = '', data = {}) {
     const response = await fetch(url, {
       method: 'POST',
       mode: 'cors',
@@ -11,14 +11,13 @@ const postData = async function postData(url = '', data = {}) {
       redirect: 'follow',
       referrerPolicy: 'no-referrer',
       body: JSON.stringify(data)
-    });
+    }).then(response => Promise.all([response.ok, response.text()])).
+      then(data => ({ status: data[0], response: JSON.parse(data[1]) })).
+        catch(error => {
+      console.log("Error logged");
+    })
 
-    const response_status = response.status
-    const response_json = response.json()
-    return {
-        'response_status': response_status,
-        'response_json':response_json
-    }
+    return response
 }
 
 export default postData;
