@@ -13,7 +13,7 @@ import {
     Button,
 } from 'antd';
 
-const RegisterComponent = () => {
+const RegisterComponent = ({global_state, update_global_state}) => {
     const [form] = Form.useForm();
     const [_, redirect] = useRedirect()
     const [display_alert, set_dispaly_alert] = useDisplayAlert()
@@ -26,12 +26,16 @@ const RegisterComponent = () => {
             'email': values.email
         }
 
-        postData(url, data).then(data => {
-            if (data.status === false) {
-                set_dispaly_alert({ 'display': true, 'display_msg': data.response.msg })
+        postData(url, data).then(response => {
+            if (response.status === false) {
+                set_dispaly_alert({ 'display': true, 'display_msg': response.response.msg })
                 return
             }
-            redirect('/login')
+            
+            data.logged_in = true
+            data.access_token = response.response.access_token
+            update_global_state(data)
+            redirect('/home')
         });
     };
 

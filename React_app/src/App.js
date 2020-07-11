@@ -1,46 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Layout } from 'antd';
+
 import 'antd/dist/antd.css';
 
 import LoginComponent from './Components/LoginComponent';
 import RegisterComponent from './Components/RegisterComponent'
-import TestComponent from './Components/TestComponent';
+import FooterComponent from './Components/FooterComponent'
+import HeaderComponent from './Components/HeaderComponent'
+import HomeComponent from './Components/HomeComponent'
 
-import useUserIsLogged from './Utils/LoggedHook'
+import useGlobalState from './Utils/GlobalStateHook'
 
 const { Content } = Layout;
 
 function App() {
-  const [is_logged, set_logged_in_status] = useUserIsLogged()
+  const [global_state, update_global_state] = useGlobalState({'logged_in':false})
 
   return (
-    <BrowserRouter>
-      <Layout className='layout' >
-        {/* <AppHeader /> */}
-        <Content style={{ padding: '50px' }}>
-          <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
-            <Switch>
-              {/* <Route path='/login' exact component={LoginComponent} /> */}
-              {(() => {
-                switch (is_logged) {
-                  case true: return <Switch>
-                    {/* <Route path='/' exact render={() => <TestComponent clb={set_logged_in_status} decrees={set_logged_in_status} />} /> */}
-                    <div>State is</div>
-                  </Switch>
-                  case false: return <Switch>
-                     <Route path='/login' exact render={() => <LoginComponent clb={set_logged_in_status} decrees={set_logged_in_status} />} />
-                     <Route path='/register' exact render={() => <RegisterComponent/>} />
-                  </Switch>
-                }
-              })()}
-              {/* <Redirect from='/login' to='/' /> */}
-            </Switch>
-          </div>
-        </Content>
-        {/* <AppFooter /> */}
-      </Layout>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <HeaderComponent global_state={global_state} update_global_state={update_global_state}/>
+        <Layout>
+          <Content>
+            <div class="content">
+            <Route path='/home' exact render={() => <HomeComponent global_state={global_state} update_global_state={update_global_state} />} />
+              <Switch>
+                {(() => {
+                  switch (global_state.logged_in) {
+                    case true: return <Switch>
+                    </Switch>
+                    case false: return <Switch>
+                      <Route path='/login' exact render={() => <LoginComponent global_state={global_state} update_global_state={update_global_state} />} />
+                      <Route path='/register' exact render={() => <RegisterComponent global_state={global_state} update_global_state={update_global_state} />} />
+                    </Switch>
+                  }
+                })()}
+              </Switch>
+            </div>
+          </Content>
+        </Layout>
+      </BrowserRouter>
+      <FooterComponent />
+    </>
   );
 }
 

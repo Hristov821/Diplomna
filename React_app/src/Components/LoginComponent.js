@@ -7,7 +7,7 @@ import useDisplayAlert  from  '../Utils/AlertHook'
 
 import  displayAlert    from  '../Utils/Common'
 
-const LoginComponent = () =>{
+const LoginComponent = ({global_state, update_global_state}) =>{
   const [_, redirect] = useRedirect()
   const [display_alert, set_dispaly_alert] = useDisplayAlert()
 
@@ -18,13 +18,16 @@ const LoginComponent = () =>{
       'password': values.password
     }
 
-    postData(url, data).then(data => {
-      console.log(data)
-      if (data.status === false) {
-        set_dispaly_alert({'display': true, 'display_msg': data.response.msg})
+    postData(url, data).then(response => {
+      if (response.status === false) {
+        set_dispaly_alert({'display': true, 'display_msg': response.response.msg})
         return
       }
-      redirect('/register')
+      
+      data.logged_in = true
+      data.access_token = response.response.access_token
+      update_global_state(data)
+      redirect('/home')
     });
   };
 
