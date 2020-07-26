@@ -5,7 +5,7 @@ const { Header } = Layout;
 
 const HeaderComponent = () => {
     return (
-        <div className="header">
+        <div>
         <Header style={{ position: 'sticky', zIndex: 1, width: '100%'}}>
             <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
                 <Menu.Item key="1">nav 1</Menu.Item>

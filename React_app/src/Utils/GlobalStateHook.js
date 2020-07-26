@@ -4,6 +4,7 @@ const useGlobalState = (init_data) => {
     const [global_state, update_state] = useState(init_data)
     
     const update_global_state = (status) => {
+    console.log()
         const res = {...global_state, ...status}
         update_state(res)
     }

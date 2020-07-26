@@ -14,14 +14,18 @@ body {
 }
 #body {
   padding:10px;
-  padding-bottom:60px;   /* Height of the footer */
+  padding-bottom:60px;
 }
 
 #footer {
-  position:absolute;
+  position:fixed;
   bottom:0;
   width:100%;
-  height:60px;   /* Height of the footer */
+  height:60px;
+}
+
+.header {
+  position: absolute;
 }
 
 .content {
@@ -30,4 +34,11 @@ body {
   top: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+}
+
+.cardcontent {
+  position: relative;
+  padding-bottom:60px;
+  padding-top:0px;
+  background-color: white;
 }
