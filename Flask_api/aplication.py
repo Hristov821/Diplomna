@@ -8,6 +8,7 @@ from routes import Register
 from routes import UserFollowing
 from routes import UserFollowers
 from routes import UserRating
+from routes import UserMovieRecomendation
 
 app.add_url_rule("/api/register/", view_func=Register.as_view("register"), methods=['POST',])
 #################
@@ -26,7 +27,7 @@ app.add_url_rule("/api/user_following/", view_func=user_following_jwt, methods=[
 user_rating_jwt = jwt_required(UserRating.as_view("user_rating_jwt"))
 app.add_url_rule("/api/user_rating/", view_func=user_rating_jwt, methods=['GET','POST'])
 
+app.add_url_rule("/api/movie/", view_func=UserMovieRecomendation.as_view("movie"), methods=['GET',])
+
 if __name__ == '__main__':
     app.run(use_debugger=True, debug=True, use_reloader=True, passthrough_errors=True)
-
-# ?param1="+lat+"&param2="+lon

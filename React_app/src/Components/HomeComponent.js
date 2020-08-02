@@ -2,7 +2,7 @@ import React from 'react';
 
 import useRedirect      from  '../Utils/RedirectHook'
 
-const FooterComponent = ({global_state, update_global_state}) => {
+const HomeComponent = ({global_state, update_global_state}) => {
     const [_, redirect] = useRedirect()
 
     if (global_state.logged_in === false){
@@ -18,4 +18,4 @@ const FooterComponent = ({global_state, update_global_state}) => {
     );
 };
 
-export default FooterComponent;
+export default HomeComponent;

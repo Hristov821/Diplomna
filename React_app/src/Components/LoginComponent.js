@@ -1,11 +1,11 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 
-import postData from '../Utils/FetchUtils'
+import {postData} from '../Utils/FetchUtils'
 import useRedirect from '../Utils/RedirectHook'
 import useDisplayAlert from '../Utils/AlertHook'
 
-import displayAlert from '../Utils/Common'
+import {displayAlert} from '../Utils/Common'
 
 const LoginComponent = ({ global_state, update_global_state }) => {
   const [_, redirect] = useRedirect()

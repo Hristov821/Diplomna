@@ -16,8 +16,6 @@ class UserRating(MethodView):
         if username == None:
             return jsonify({"msg": "Missing mandatory parameter 'username'"}), 400
         
-        print(username)
-        print(movie_title)
         result = get_user_movie_ratings(username, movie_title)
         return  jsonify(result=result), 200
 

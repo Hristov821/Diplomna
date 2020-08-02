@@ -9,8 +9,8 @@ import RegisterComponent from './Components/RegisterComponent'
 import FooterComponent from './Components/FooterComponent'
 import HeaderComponent from './Components/HeaderComponent'
 import HomeComponent from './Components/HomeComponent'
-import CardComponent from './Components/CardComponent'
-import CardGridComponent from './Components/CardGridComponent'
+import MovieInfoComponent from './Components/MovieInfoComponent'
+import MovieCardGridComponent from './Components/MovieCardGridComponent'
 
 import useGlobalState from './Utils/GlobalStateHook'
 
@@ -24,7 +24,7 @@ function App() {
       <BrowserRouter>
         <HeaderComponent global_state={global_state} update_global_state={update_global_state}/>
         <Layout>
-          <Content>
+          <Content style={{backgroundColor:'white',}}>
             <Route path='/home' exact render={() => <HomeComponent global_state={global_state} update_global_state={update_global_state} />} />
               <Switch>
                 {(() => {
@@ -34,7 +34,8 @@ function App() {
                     case false: return <Switch>
                       <Route path='/login' exact render={() => <LoginComponent global_state={global_state} update_global_state={update_global_state} />} />
                       <Route path='/register' exact render={() => <RegisterComponent global_state={global_state} update_global_state={update_global_state} />} />
-                      <Route path='/card' exact render={() => <CardGridComponent global_state={global_state} update_global_state={update_global_state} />} />
+                      <Route path='/movie_card' exact render={() => <MovieCardGridComponent global_state={global_state} update_global_state={update_global_state} />} />
+                      <Route path='/movie_info' exact render={() => <MovieInfoComponent global_state={global_state} update_global_state={update_global_state} />} />
                     </Switch>
                   }
                 })()}
@@ -48,5 +49,3 @@ function App() {
 }
 
 export default App;
-
-// {(props) => <testec {...props} title={`Props through render`}/>}

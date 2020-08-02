@@ -3,8 +3,8 @@ import { useHistory } from "react-router"
 const useRedirect = () =>{
     const history = useHistory()
   
-    function redirect(path) {
-      history.push(path)
+    function redirect(path, args) {
+      history.push(path, args)
     }
 
     return [history, redirect];

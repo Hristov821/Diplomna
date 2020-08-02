@@ -1,16 +1,21 @@
 from py2neo import Graph, NodeMatcher
 from aplication import app, bcrypt
 
-def find_similar_movies(movie_name):
+def find_similar_movies(movie, categories, username):
+   categories_str = ""
+   for category in categories:
+      categories_str = categories_str + ",(b)-[:IN_CATEGORY]->(Category {{name:\"{}\"}})".format(category)
+      
    query="""
-MATCH (a:Movie {title:$movie_name})-[*2]-(b:Movie)
+MATCH (a:Movie {title:$movie})-[*2]-(b:Movie)
+""" + categories_str + """
 WHERE a <> b AND a.title < b.title
 WITH DISTINCT a,b
-RETURN b.title as recommendation, gds.alpha.linkprediction.adamicAdar(a, b) AS score
+RETURN b as recommendation, gds.alpha.linkprediction.adamicAdar(a, b) AS score
 ORDER BY score DESC
 LIMIT 10
 """
-   result = app.NEO4J_GRAPH.run(query,movie_name=movie_name).data()
+   result = app.config["NEO4J_GRAPH"].run(query,movie=movie).data()
    return result
 
 def find_similar_actors(actor_name):
