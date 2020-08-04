@@ -7,7 +7,6 @@ const useGlobalState = (init_data) => {
         const res = {...global_state, ...status}
         update_state(res)
     }
-    console.log(global_state)
 
     return [global_state, update_global_state];
 }

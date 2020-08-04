@@ -20,11 +20,10 @@ class UserRating(MethodView):
         return  jsonify(result=result), 200
 
     def post(self):
-        username = request.args.get("username", None)
-        movie_title = request.args.get("movie_title", None)
-        rating = request.args.get("rating", None)
+        movie_title = request.json.get("movie_title", None)
+        rating = request.json.get("rating", None)
+        username = get_jwt_identity().get("username", None)
         
-        username = username if username != None else get_jwt_identity().get("username", None)
         if username == None:
             return jsonify({"msg": "Missing mandatory parameter 'username'"}), 400
         elif movie_title == None:

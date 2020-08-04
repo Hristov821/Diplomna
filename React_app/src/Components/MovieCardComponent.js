@@ -6,19 +6,18 @@ const { Meta } = Card;
 
 const MovieCardComponent = ({movie, global_state}) => {
     const [_, redirect] = useRedirect()
-    console.log(movie)
-    console.log(global_state)
 
-    if ( ! movie.image){
-        movie.image = "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+    if ( ! movie.poster){
+        movie.poster = "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
     }
-
+    
     return <Card
-        style={{ width: 300}}
+        style={{ height: 640, width: 480}}
         cover={
             <img
                 alt="example"
-                src={movie.image}
+                style={{ height: '400px'}}
+                src={movie.poster}
             />
         }
         actions={[
@@ -28,9 +27,10 @@ const MovieCardComponent = ({movie, global_state}) => {
         ]}
     >
         <Meta
-            avatar={<Avatar src={movie.image} />}
+            avatar={<Avatar src={movie.poster} />}
             title={movie.title}
             description={movie.description}
+            style={{ height: 100}}
         />
     </Card>
 };

@@ -3,34 +3,29 @@ import React from 'react';
 import { useState } from 'react';
 import { Row, Col, Button, Form } from 'antd';
 
-import useDisplayAlert from '../Utils/AlertHook'
-import MovieCardComponent from './MovieCardComponent'
+import UserCardComponent from './UserCardComponent'
 import { get_search_form } from '../Utils/Common'
 import { getData } from '../Utils/FetchUtils'
-import { displayAlert } from '../Utils/Common'
 
-const MovieCardGridComponent = ({ global_state, update_global_state }) => {
-  const [display_alert, set_dispaly_alert] = useDisplayAlert({
-    'display': true,
-    'display_msg': "Please enter requerd arguments"
-  })
+const ListUsersComponent = ({ global_state, update_global_state }) => {
   const [list_data, set_list_data] = useState([])
 
   const [form] = Form.useForm();
 
   const onFinish = values => {
-    const url = "api/movie/"
+    const url = "api/list_users/"
     const data = {
-      'movie': values.movie,
-      'categories': values.categories,
+      'check_user': values.user,
+      'exclude_user': global_state.username,
+      'access_token': global_state.access_token
     }
-
+    
     getData(url, data).then(response => {
       if (response.status === false) {
-        set_dispaly_alert({ 'display': true, 'display_msg': response.response.msg })
         return
       }
-      set_list_data(response.response.movies)
+      
+      set_list_data(response.response.result)
     });
   }
 
@@ -42,7 +37,7 @@ const MovieCardGridComponent = ({ global_state, update_global_state }) => {
         className="ant-advanced-search-form"
         onFinish={onFinish}
       >
-        <Row align="center" gutter={24}>{get_search_form("movie")}</Row>
+        <Row align="center" gutter={24}>{get_search_form("list_users")}</Row>
         <Row align="center">
           <Col
             span={24}
@@ -60,10 +55,6 @@ const MovieCardGridComponent = ({ global_state, update_global_state }) => {
               onClick={() => {
                 form.resetFields();
                 set_list_data([])
-                set_dispaly_alert({
-                  'display': true,
-                  'display_msg': "Please enter requerd arguments"
-                })
               }}
             >
               Clear
@@ -71,12 +62,11 @@ const MovieCardGridComponent = ({ global_state, update_global_state }) => {
           </Col>
         </Row>
       </Form>
-    <div>{displayAlert(display_alert, set_dispaly_alert)}</div>
       <Row type="flex" style={{ alignItems: 'center' }} align="midle" justify="center">
-        {list_data.map(item => <Col key={item.id}><MovieCardComponent movie={item.recommendation}  global_state={global_state}/></Col>)}
+        {list_data.map(item => <Col key={item.id}><UserCardComponent user_entry={item}  global_state={global_state}/></Col>)}
       </Row>;
     </div>
   </>
 };
 
-export default MovieCardGridComponent;
+export default ListUsersComponent;

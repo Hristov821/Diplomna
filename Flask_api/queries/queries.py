@@ -102,3 +102,22 @@ ORDER BY r.timestamp, r.value
    
    result = graph.run(query, username=username).data()
    return result
+
+
+def get_users_with_similar_names(username, exclude_user):
+   query = """
+MATCH (n:User) 
+where toLower(n.username) contains toLower(\'{search_user_pattern}\') 
+and NOT n.username=\'{exclude_user}\'
+return n.username as username
+""".format(search_user_pattern=username, exclude_user=exclude_user)
+
+   print(query)
+   graph = app.config["NEO4J_GRAPH"]
+   result = graph.run(query).data()
+   
+   return result
+
+
+# add poster
+# MATCH (n:Movie {title:"Taxi Driver"}) SET n.poster = "https://m.media-amazon.com/images/M/MV5BNGNhMDIzZTUtNTBlZi00MTRlLWFjM2ItYzViMjE3YzI5MjljXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_UY268_CR1,0,182,268_AL_.jpg" return n

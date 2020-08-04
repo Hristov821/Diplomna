@@ -10,6 +10,7 @@ const MovieInfoComponent = () => {
     const [movie_data, global_state] = location.state
 
 
+    console.log("final")
     console.log(global_state)
     const onFinish = values => {
         const url = "api/user_rating/"
@@ -17,7 +18,7 @@ const MovieInfoComponent = () => {
         const data = {
           'rating': values.rating,
           'movie_title': movie_data.title,
-          'username': 'movie_title'
+          'access_token': global_state.access_token
         }
     
         postData(url, data).then(response => {
@@ -29,7 +30,7 @@ const MovieInfoComponent = () => {
     return (<>
         <div class="movie_info">
             <div class="movie_content">
-                <img alt={movie_data.title} src={movie_data.image} width={900} height={600} />
+                <img alt={movie_data.title} src={movie_data.poster} width={900} height={600} />
                 <div>Title: {movie_data.title}</div>
                 <div>Description: {movie_data.description}</div>
                 <div>Release Year: {movie_data.release_year}</div>

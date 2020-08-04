@@ -44,7 +44,22 @@ const get_search_form = (search_type) => {
                 </Form.Item>
             </Col>)
     }
-    else if (search_type === "actor") {
+    else if (search_type === "list_users") {
+        search_form.push(
+            <Col span={8} key="UserInput">
+                <Form.Item
+                    name={"user"}
+                    label={"User"}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Input username!',
+                        },
+                    ]}
+                >
+                    <Input placeholder="Input Valid user name" />
+                </Form.Item>
+            </Col>)
     }
     else {
     }

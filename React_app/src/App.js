@@ -11,13 +11,14 @@ import HeaderComponent from './Components/HeaderComponent'
 import HomeComponent from './Components/HomeComponent'
 import MovieInfoComponent from './Components/MovieInfoComponent'
 import MovieCardGridComponent from './Components/MovieCardGridComponent'
+import ListUsersComponent from './Components/ListUsersComponent'
 
 import useGlobalState from './Utils/GlobalStateHook'
 
 const { Content } = Layout;
 
 function App() {
-  const [global_state, update_global_state] = useGlobalState({'logged_in':false})
+  const [global_state, update_global_state] = useGlobalState({'logged_in':false, access_token:'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTMzMzM2NDcsIm5iZiI6MTU5MzMzMzY0NywianRpIjoiZTlhMGM4ODQtMDIxOC00YTA4LTlkYTctMTRmNDA3MTlmNmQ2IiwiaWRlbnRpdHkiOnsidXNlcm5hbWUiOiJpY2tvMjMxMzEifSwiZnJlc2giOmZhbHNlLCJ0eXBlIjoiYWNjZXNzIn0.jMQHcAcEEi-R9CdzWh5zq8mMuO9l3jWGtaVKuS4fDuk'})
 
   return (
     <>
@@ -36,6 +37,7 @@ function App() {
                       <Route path='/register' exact render={() => <RegisterComponent global_state={global_state} update_global_state={update_global_state} />} />
                       <Route path='/movie_card' exact render={() => <MovieCardGridComponent global_state={global_state} update_global_state={update_global_state} />} />
                       <Route path='/movie_info' exact render={() => <MovieInfoComponent global_state={global_state} update_global_state={update_global_state} />} />
+                      <Route path='/list_users' exact render={() => <ListUsersComponent global_state={global_state} update_global_state={update_global_state} />} />
                     </Switch>
                   }
                 })()}
