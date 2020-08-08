@@ -12,6 +12,8 @@ import HomeComponent from './Components/HomeComponent'
 import MovieInfoComponent from './Components/MovieInfoComponent'
 import MovieCardGridComponent from './Components/MovieCardGridComponent'
 import ListUsersComponent from './Components/ListUsersComponent'
+import UserInfoComponent from './Components/UserInfoComponent'
+
 
 import useGlobalState from './Utils/GlobalStateHook'
 
@@ -38,6 +40,7 @@ function App() {
                       <Route path='/movie_card' exact render={() => <MovieCardGridComponent global_state={global_state} update_global_state={update_global_state} />} />
                       <Route path='/movie_info' exact render={() => <MovieInfoComponent global_state={global_state} update_global_state={update_global_state} />} />
                       <Route path='/list_users' exact render={() => <ListUsersComponent global_state={global_state} update_global_state={update_global_state} />} />
+                      <Route path='/user_info' exact render={() => <UserInfoComponent global_state={global_state} update_global_state={update_global_state} />} />
                     </Switch>
                   }
                 })()}
