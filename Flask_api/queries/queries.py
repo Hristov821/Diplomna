@@ -69,9 +69,10 @@ return user.password as PASSWORD
 def get_followers(username, app=app):
    query = """
 MATCH (user:User {username: $username})<-[fl:FOLLOWS]-(u:User)
-return u.username as username
+return u.username as username, u.poster as poster
 ORDER BY fl.timestamp
 """
+
    graph = app.config["NEO4J_GRAPH"]
    result = graph.run(query, username=username).data()
    
@@ -80,7 +81,7 @@ ORDER BY fl.timestamp
 def get_following(username, app=app):
    query = """
 MATCH (user:User {username: $username})-[fl:FOLLOWS]->(u:User)
-return u.username as username
+return u.username as username, u.poster as poster
 ORDER BY fl.timestamp
 """
    graph = app.config["NEO4J_GRAPH"]
@@ -91,7 +92,7 @@ ORDER BY fl.timestamp
 def get_user_movie_ratings(username, movie_title=None):
    query = """
 MATCH (user:User {username: $username})-[r:RATING]->(m:Movie)
-return m.title as movie, r.value as rating
+return m as movie
 ORDER BY r.timestamp, r.value
 """ 
    parameter_dict = {"username":username}

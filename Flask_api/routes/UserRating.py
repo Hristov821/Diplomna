@@ -17,7 +17,7 @@ class UserRating(MethodView):
             return jsonify({"msg": "Missing mandatory parameter 'username'"}), 400
         
         result = get_user_movie_ratings(username, movie_title)
-        return  jsonify(result=result), 200
+        return  jsonify(movies=result), 200
 
     def post(self):
         movie_title = request.json.get("movie_title", None)

@@ -58,3 +58,12 @@ ON CREATE SET r.timestamp = timestamp(), r.value = toInteger($rating)
     graph = app.config["NEO4J_GRAPH"]
     result = graph.run(command, username=username, movie_title=movie_title, rating=rating).data()
     return result
+
+
+# gosho2dsadsdasdsadasadsadsadsdsadasdsaa
+
+# MATCH (u:User {username:'gosho2dsadsdasdsadasadsadsadsdsadasdsaa'})
+# MATCH (m:Movie {title:'Pulp Fiction'})
+# MERGE (u)-[r:RATING]->(m)
+# ON MATCH SET r.timestamp = timestamp(), r.value = toInteger('5')
+# ON CREATE SET r.timestamp = timestamp(), r.value = toInteger('5')

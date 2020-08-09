@@ -9,9 +9,10 @@ from queries import get_followers
 class UserFollowers(MethodView):
     def get(self):
         username = request.args.get("username", None)
-        if username is None:
-            username = get_jwt_identity().get("username", None)
         
+        if username is None:
+            return jsonify({"msg": "Missing parameter username"}), 400
+
         followers = get_followers(username)
 
         return jsonify(followers=followers), 200
