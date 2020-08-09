@@ -12,21 +12,7 @@ const UserCardComponent = ({user_entry, global_state}) => {
         user_entry.poster = "https://www.computerhope.com/jargon/g/guest-user.jpg"
     }
     
-
-    const follow_user = () => {
-        const url = "api/user_following/"
-        const data = {
-          'user_to_follow': user_entry.username,
-          'access_token': global_state.access_token
-        }
-        
-        postData(url, data).then(response => {
-          if (response.status === false) {
-            return
-          }
-        });
-      }
-
+    
     return <Card
         style={{ height: 240, width: 320}}
         cover={
@@ -37,9 +23,6 @@ const UserCardComponent = ({user_entry, global_state}) => {
             />
         }
         actions={[
-            <Button type="primary" onClick={() => follow_user()}>
-            Follow
-        </Button>,
         <Button type="primary" onClick={() => redirect('/user_info', [user_entry, global_state])}>
                     More
                 </Button>

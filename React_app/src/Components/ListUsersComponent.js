@@ -12,6 +12,8 @@ const ListUsersComponent = ({ global_state, update_global_state }) => {
 
   const [form] = Form.useForm();
 
+  console.log("goshoooooooo")
+
   const onFinish = values => {
     const url = "api/list_users/"
     const data = {

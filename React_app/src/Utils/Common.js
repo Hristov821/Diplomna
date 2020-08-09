@@ -252,3 +252,17 @@ export { displayAlert, get_search_form };
 //       }
 //     });
 //   }
+
+// const follow_user = () => {
+//     const url = "api/user_following/"
+//     const data = {
+//       'user_to_follow': user_entry.username,
+//       'access_token': global_state.access_token
+//     }
+    
+//     postData(url, data).then(response => {
+//       if (response.status === false) {
+//         return
+//       }
+//     });
+//   }

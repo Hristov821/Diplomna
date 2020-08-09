@@ -1,9 +1,11 @@
 
 import React from 'react';
 import { useLocation } from "react-router-dom";
-import { Form, Button, Skeleton } from 'antd';
+import { Form, Button, Skeleton, Row, Col } from 'antd';
 import { postData, getData } from '../Utils/FetchUtils'
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import MovieCardComponent from './MovieCardComponent'
+import UserCardComponent from './UserCardComponent'
 import useRedirect from '../Utils/RedirectHook'
 import useLocalState from '../Utils/LocalStateHook'
 
@@ -11,10 +13,14 @@ const UserInfoComponent = () => {
     const location = useLocation();
     const [_, redirect] = useRedirect()
     const [user, global_state] = location.state
-    const [local_state, update_local_state] = useLocalState({ "loaded": false })
-
+    const [local_state, update_local_state] = useLocalState({ "loaded": false, "current_user":user.username})
+    
     if (global_state.username === user.username) {
         redirect("/home")
+    }
+
+    if (user.username != local_state.current_user){
+        window.location.reload()
     }
 
     useEffect(() => {
@@ -23,16 +29,17 @@ const UserInfoComponent = () => {
             const following = await get_following()
             const rated_movies = await get_rated_movies()
             
+            console.log("idvam tuka")
             update_local_state(
                 {
                     "loaded": true,
                     "followers": followers,
                     "following": following,
-                    "rated_movies": rated_movies
+                    "rated_movies": rated_movies,
                 })
           }
           setup()
-    }, []);
+    }, [local_state.current_user]);
 
 
     const follow_user = () => {
@@ -95,11 +102,35 @@ const UserInfoComponent = () => {
         });
     }
 
-    const render_choice = (choice) =>{
-        if(choice === "movies"){
+    const render_choice = () =>{
+        if(local_state.choice === "movies"){
+            if (local_state.rated_movies.length === 0 ){
+                return <p>User '{user.username}' does not rated movies</p>
+            }
             return (<Row type="flex" style={{ alignItems: 'center' }} align="midle" justify="center">
-            {local_state.rated_movies.map(item => <Col key={item.id}><MovieCardComponent movie={item}  global_state={global_state}/></Col>)}
+            {local_state.rated_movies.map(item => <Col key={item.id}><MovieCardComponent movie={item.movie}  global_state={global_state}/></Col>)}
           </Row>)
+        }
+        else if (local_state.choice === "followers"){
+            if (local_state.followers.length === 0 ){
+                return <p>User '{user.username}' doesn't have followers</p>
+            }
+            return (<Row type="flex" style={{ alignItems: 'center' }} align="midle" justify="center">
+                {local_state.followers.map(item => <Col key={item.id}><UserCardComponent user_entry={item}  global_state={global_state}/></Col>)}
+              </Row>
+            )
+        }
+        else if (local_state.choice === "following"){
+            if (local_state.following.length === 0 ){
+            return <p>User '{user.username}' does not follow anyone</p>
+            }
+            return (<Row type="flex" style={{ alignItems: 'center' }} align="midle" justify="center">
+                {local_state.following.map(item => <Col key={item.id}><UserCardComponent user_entry={item}  global_state={global_state}/></Col>)}
+              </Row>
+            )
+        }
+        else {
+            return <p>Choice some listing...</p>
         }
     }
 
@@ -126,7 +157,7 @@ const UserInfoComponent = () => {
                                                     type="primary"
                                                     disabled={false}
                                                     onClick={() => {
-                                                        console.log("kilkam")
+                                                        update_local_state({"choice":"movies"})
                                                     }}
                                                     style={{ margin: '2px' }}
                                                 >
@@ -136,7 +167,7 @@ const UserInfoComponent = () => {
                                                     type="primary"
                                                     disabled={false}
                                                     onClick={() => {
-                                                        console.log("kilkam")
+                                                        update_local_state({"choice":"followers"})
                                                     }}
                                                     style={{ margin: '2px' }}
                                                 >
@@ -146,7 +177,7 @@ const UserInfoComponent = () => {
                                                     type="primary"
                                                     disabled={false}
                                                     onClick={() => {
-                                                        console.log("kilkam")
+                                                        update_local_state({"choice":"following"})
                                                     }}
                                                     style={{ margin: '2px' }}
                                                 >
@@ -164,7 +195,7 @@ const UserInfoComponent = () => {
                                             </Button>
                                             </Form.Item>
                                         </Form>
-
+                                                <div>{render_choice()}</div>
                                     </>;
                                 case false:
                                     return <Skeleton />;

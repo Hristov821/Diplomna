@@ -6,3 +6,4 @@ from .UserFollowers import UserFollowers
 from .UserRating import UserRating
 from .UserMovieRecomendation import UserMovieRecomendation
 from .ListUsers import ListUsers
+from .MovieFollowersBasedRecomendation import MovieFollowersBasedRecomendation

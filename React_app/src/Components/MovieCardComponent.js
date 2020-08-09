@@ -7,6 +7,8 @@ const { Meta } = Card;
 const MovieCardComponent = ({movie, global_state}) => {
     const [_, redirect] = useRedirect()
 
+
+    console.log(movie)
     if ( ! movie.poster){
         movie.poster = "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
     }
