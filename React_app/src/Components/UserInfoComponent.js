@@ -13,13 +13,20 @@ const UserInfoComponent = () => {
     const location = useLocation();
     const [_, redirect] = useRedirect()
     const [user, global_state] = location.state
-    const [local_state, update_local_state] = useLocalState({ "loaded": false, "current_user":user.username})
-    
-    if (global_state.username === user.username) {
-        redirect("/home")
+    const [local_state, update_local_state] = useLocalState({
+        "loaded": false,
+        "current_user": user.username,
+        "view_logged_user": false
+    })
+
+    if (global_state.username === user.username && local_state.view_logged_user === false) {
+        update_local_state({
+            "user_follows": true,
+            "view_logged_user": true,
+        })
     }
 
-    if (user.username != local_state.current_user){
+    if (user.username != local_state.current_user) {
         window.location.reload()
     }
 
@@ -28,17 +35,18 @@ const UserInfoComponent = () => {
             const followers = await get_followers()
             const following = await get_following()
             const rated_movies = await get_rated_movies()
-            
-            console.log("idvam tuka")
+            const user_follows = await list_user_is_followed()
+
             update_local_state(
                 {
                     "loaded": true,
                     "followers": followers,
                     "following": following,
                     "rated_movies": rated_movies,
+                    "user_follows": user_follows
                 })
-          }
-          setup()
+        }
+        setup()
     }, [local_state.current_user]);
 
 
@@ -53,6 +61,7 @@ const UserInfoComponent = () => {
             if (response.status === false) {
                 return
             }
+            update_local_state({ "user_follows": true })
         });
     }
 
@@ -86,47 +95,64 @@ const UserInfoComponent = () => {
         });
     }
 
-    const get_rated_movies = values => {
+    const get_rated_movies = () => {
         const url = "api/user_rating/"
 
         const data = {
-          'username': user.username,
-          'access_token': global_state.access_token
+            'username': user.username,
+            'access_token': global_state.access_token
         }
-    
+
         return getData(url, data).then(response => {
-          if (response.status === false) {
-            return
-          }
+            if (response.status === false) {
+                return
+            }
             return response.response.movies
         });
     }
 
-    const render_choice = () =>{
-        if(local_state.choice === "movies"){
-            if (local_state.rated_movies.length === 0 ){
+    const list_user_is_followed = () => {
+        const url = "api/user_followers/"
+        const data = {
+            'current_username': local_state.current_user,
+            'username': user.username,
+            'access_token': global_state.access_token
+        }
+
+        return getData(url, data).then(response => {
+            if (response.status === false) {
+                return
+            }
+
+            return response.response.user_follows
+        });
+    }
+
+    const render_choice = () => {
+        if (local_state.choice === "movies") {
+            if (local_state.rated_movies.length === 0) {
                 return <p>User '{user.username}' does not rated movies</p>
             }
             return (<Row type="flex" style={{ alignItems: 'center' }} align="midle" justify="center">
-            {local_state.rated_movies.map(item => <Col key={item.id}><MovieCardComponent movie={item.movie}  global_state={global_state}/></Col>)}
-          </Row>)
+                {local_state.rated_movies.map(item => <Col key={item.id}><MovieCardComponent movie={item.movie} global_state={global_state} /></Col>)}
+            </Row>)
         }
-        else if (local_state.choice === "followers"){
-            if (local_state.followers.length === 0 ){
+        else if (local_state.choice === "followers") {
+            if (local_state.followers.length === 0) {
                 return <p>User '{user.username}' doesn't have followers</p>
             }
             return (<Row type="flex" style={{ alignItems: 'center' }} align="midle" justify="center">
-                {local_state.followers.map(item => <Col key={item.id}><UserCardComponent user_entry={item}  global_state={global_state}/></Col>)}
-              </Row>
+                {local_state.followers.map(item => <Col key={item.id}><UserCardComponent user_entry={item} global_state={global_state} /></Col>)}
+            </Row>
             )
         }
-        else if (local_state.choice === "following"){
-            if (local_state.following.length === 0 ){
-            return <p>User '{user.username}' does not follow anyone</p>
+        else if (local_state.choice === "following") {
+            if (local_state.following.length === 0) {
+                return <p>User '{user.username}' does not follow anyone</p>
             }
             return (<Row type="flex" style={{ alignItems: 'center' }} align="midle" justify="center">
-                {local_state.following.map(item => <Col key={item.id}><UserCardComponent user_entry={item}  global_state={global_state}/></Col>)}
-              </Row>
+                {local_state.following.map(item => <Col key={item.id}><UserCardComponent user_entry={item} global_state={global_state} /></Col>)}
+            </Row>
             )
         }
         else {
@@ -157,7 +183,7 @@ const UserInfoComponent = () => {
                                                     type="primary"
                                                     disabled={false}
                                                     onClick={() => {
-                                                        update_local_state({"choice":"movies"})
+                                                        update_local_state({ "choice": "movies" })
                                                     }}
                                                     style={{ margin: '2px' }}
                                                 >
@@ -167,7 +193,7 @@ const UserInfoComponent = () => {
                                                     type="primary"
                                                     disabled={false}
                                                     onClick={() => {
-                                                        update_local_state({"choice":"followers"})
+                                                        update_local_state({ "choice": "followers" })
                                                     }}
                                                     style={{ margin: '2px' }}
                                                 >
@@ -177,25 +203,27 @@ const UserInfoComponent = () => {
                                                     type="primary"
                                                     disabled={false}
                                                     onClick={() => {
-                                                        update_local_state({"choice":"following"})
+                                                        update_local_state({ "choice": "following" })
                                                     }}
                                                     style={{ margin: '2px' }}
                                                 >
                                                     List Following
                                                 </Button>
-                                                <Button
-                                                    type="primary"
-                                                    disabled={false}
-                                                    onClick={() => {
-                                                        follow_user()
-                                                    }}
-                                                    style={{ margin: '2px' }}
-                                                >
-                                                    Follow_user
-                                            </Button>
+                                                {!local_state.user_follows ?
+                                                    <Button
+                                                        type="primary"
+                                                        disabled={false}
+                                                        onClick={() => {
+                                                            follow_user()
+                                                        }}
+                                                        style={{ margin: '2px' }}
+                                                    >
+                                                        Follow_user
+                                            </Button> : null
+                                                }
                                             </Form.Item>
                                         </Form>
-                                                <div>{render_choice()}</div>
+                                        <div>{render_choice()}</div>
                                     </>;
                                 case false:
                                     return <Skeleton />;

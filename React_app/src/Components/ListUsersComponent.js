@@ -1,18 +1,18 @@
 
 import React from 'react';
 import { useState } from 'react';
-import { Row, Col, Button, Form } from 'antd';
+import { Row, Col, Button, Form, Typography } from 'antd';
 
 import UserCardComponent from './UserCardComponent'
 import { get_search_form } from '../Utils/Common'
 import { getData } from '../Utils/FetchUtils'
 
+const { Title } = Typography;
+
 const ListUsersComponent = ({ global_state, update_global_state }) => {
   const [list_data, set_list_data] = useState([])
 
   const [form] = Form.useForm();
-
-  console.log("goshoooooooo")
 
   const onFinish = values => {
     const url = "api/list_users/"
@@ -33,6 +33,7 @@ const ListUsersComponent = ({ global_state, update_global_state }) => {
 
   return <>
     <div class="cardcontent">
+      <Title style={{textAlign: 'center',}}>List Users based on name</Title>
       <Form
         form={form}
         name="advanced_search"

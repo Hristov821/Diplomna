@@ -27,7 +27,7 @@ const LoginComponent = ({ global_state, update_global_state }) => {
       data.logged_in = true
       data.access_token = response.response.access_token
       update_global_state(data)
-      redirect('/home')
+      redirect('/movie_card')
     });
   };
 

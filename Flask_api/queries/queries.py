@@ -130,5 +130,33 @@ RETURN distinct movie
    result = graph.run(query, username=username).data()
    
    return result
+
+
+def check_if_user_follows_user(user1, user2):
+   query = """
+MATCH p=(u:User {username:$user1})-[r:FOLLOWS]->(u2: User {username:$user2}) 
+RETURN count(r) as count
+"""
+
+   graph = app.config["NEO4J_GRAPH"]
+   result = graph.run(query, user1=user1, user2=user2).data()
+
+   if int(result[0]["count"]) > 0:
+      return True
+   return False
+
+
+def recomend_user_based_on_following(username):
+   query = """
+   MATCH p=(u:User {username:$username})-[f1:FOLLOWS]->(fl1:User)-[*2..3]->(res:User) 
+where not EXISTS((u)-[:FOLLOWS]->(res)) and u.username<>res.username 
+return distinct res.username as username, res.poster as poste
+"""
+
+   graph = app.config["NEO4J_GRAPH"]
+   result = graph.run(query, username=username).data()
+   
+   return result
+
 # add poster
 # MATCH (n:Movie {title:"Taxi Driver"}) SET n.poster = "https://m.media-amazon.com/images/M/MV5BNGNhMDIzZTUtNTBlZi00MTRlLWFjM2ItYzViMjE3YzI5MjljXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_UY268_CR1,0,182,268_AL_.jpg" return n
