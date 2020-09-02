@@ -44,3 +44,4 @@ app.add_url_rule("/api/users_based_recomendation/", view_func=recomend_users_jwt
 
 if __name__ == '__main__':
     app.run(use_debugger=True, debug=True, use_reloader=True, passthrough_errors=True)
+

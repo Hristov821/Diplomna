@@ -1,13 +1,15 @@
 
 import React from 'react';
 import { useLocation } from "react-router-dom";
-import { Form, Button, Skeleton, Row, Col } from 'antd';
+import { Form, Button, Skeleton, Row, Col, Typography } from 'antd';
 import { postData, getData } from '../Utils/FetchUtils'
 import { useEffect } from 'react';
 import MovieCardComponent from './MovieCardComponent'
 import UserCardComponent from './UserCardComponent'
 import useRedirect from '../Utils/RedirectHook'
 import useLocalState from '../Utils/LocalStateHook'
+
+const { Title } = Typography;
 
 const UserInfoComponent = () => {
     const location = useLocation();
@@ -36,7 +38,8 @@ const UserInfoComponent = () => {
             const following = await get_following()
             const rated_movies = await get_rated_movies()
             const user_follows = await list_user_is_followed()
-
+            
+            console.log(user_follows)
             update_local_state(
                 {
                     "loaded": true,
@@ -111,21 +114,19 @@ const UserInfoComponent = () => {
         });
     }
 
-    const list_user_is_followed = () => {
+    const list_user_is_followed = async () => {
         const url = "api/user_followers/"
         const data = {
-            'current_username': local_state.current_user,
+            'current_username': global_state.username,
             'username': user.username,
             'access_token': global_state.access_token
         }
 
-        return getData(url, data).then(response => {
-            if (response.status === false) {
-                return
-            }
-
-            return response.response.user_follows
-        });
+        const response = await getData(url, data);
+        if (response.status === false) {
+            return;
+        }
+        return response.response.user_follows;
     }
 
     const render_choice = () => {
@@ -163,6 +164,7 @@ const UserInfoComponent = () => {
     return (
         <div class="movie_info">
             <div class="movie_content">
+            <Title style={{textAlign: 'center',}}>Basic User information</Title>
                 <img
                     alt="example"
                     style={{ height: '600px', width: '900px' }}

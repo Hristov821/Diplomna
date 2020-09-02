@@ -1,10 +1,12 @@
 from py2neo import Graph, NodeMatcher
 from aplication import app, bcrypt
 
-def find_similar_movies(movie, categories, username):
+def find_similar_movies(movie, categories):
    categories_str = ""
+   
    for category in categories:
-      categories_str = categories_str + ",(b)-[:IN_CATEGORY]->(Category {{name:\"{}\"}})".format(category)
+      if category != "undefined":
+         categories_str = categories_str + ",(b)-[:IN_CATEGORY]->(Category {{name:\"{}\"}})".format(category)
       
    query="""
 MATCH (a:Movie {title:$movie})-[*2]-(b:Movie)
@@ -15,8 +17,19 @@ RETURN b as recommendation, gds.alpha.linkprediction.adamicAdar(a, b) AS score
 ORDER BY score DESC
 LIMIT 10
 """
+   print(query)
    result = app.config["NEO4J_GRAPH"].run(query,movie=movie).data()
    return result
+
+# MATCH (a:Movie {title:"Pulp Fiction"})-[*2]-(b:Movie)
+# WHERE a <> b AND a.title < b.title
+# WITH DISTINCT a,b
+# RETURN b as recommendation, gds.alpha.linkprediction.adamicAdar(a, b, {relationshipQuery: 'ACTED_IN'}) AS score
+# ORDER BY score DESCMATCH (a:Movie {title:"Kill Bill: Vol. 1"})-[*2]-(b:Movie)
+# WHERE a <> b AND a.title < b.title
+# WITH DISTINCT a,b
+# RETURN b.title as recommendation, gds.alpha.linkprediction.adamicAdar(a, b) AS score
+# ORDER BY score DESC LIMIT 3
 
 def find_similar_actors(actor_name):
    query="""
@@ -91,7 +104,7 @@ ORDER BY fl.timestamp
 
 def get_user_movie_ratings(username, movie_title=None):
    query = """
-MATCH (user:User {username: $username})-[r:RATING]->(m:Movie)
+MATCH (user:User {username: $username})-[r:USER_RATED]->(m:Movie)
 return m as movie
 ORDER BY r.timestamp, r.value
 """ 
@@ -110,7 +123,7 @@ def get_users_with_similar_names(username, exclude_user):
 MATCH (n:User) 
 where toLower(n.username) contains toLower(\'{search_user_pattern}\') 
 and NOT n.username=\'{exclude_user}\'
-return n.username as username
+return n.username as username, n.poster as poster
 """.format(search_user_pattern=username, exclude_user=exclude_user)
 
    print(query)
@@ -122,8 +135,8 @@ return n.username as username
 
 def recomend_movies_base_on_followers(username):
    query = """
-MATCH (u:User {username:$username})-[f:FOLLOWS*4]->(u2:User)-[r:RATING]->(movie:Movie)
-where u<>u2 and r.value > 3
+MATCH (u:User {username:$username})-[f:FOLLOWS]->(u2:User)-[r:USER_RATED]->(movie:Movie)
+where u<>u2 and r.rating > 3
 RETURN distinct movie
 """
    graph = app.config["NEO4J_GRAPH"]
@@ -148,9 +161,9 @@ RETURN count(r) as count
 
 def recomend_user_based_on_following(username):
    query = """
-   MATCH p=(u:User {username:$username})-[f1:FOLLOWS]->(fl1:User)-[*2..3]->(res:User) 
-where not EXISTS((u)-[:FOLLOWS]->(res)) and u.username<>res.username 
-return distinct res.username as username, res.poster as poste
+MATCH p=(u:User {username:$username})-[f1:FOLLOWS*2]->(fl1:User)
+where not EXISTS((u)-[:FOLLOWS]->(fl1)) and u.username<>fl1.username 
+return distinct fl1.username as username, fl1.poster as poster
 """
 
    graph = app.config["NEO4J_GRAPH"]

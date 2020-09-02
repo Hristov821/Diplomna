@@ -12,6 +12,6 @@ class RecomendUsersBasedOnFollowing(MethodView):
         if username is None:
             return jsonify({"msg": "Missing username in jwt try to login again"}), 400
 
-        movies = recomend_user_based_on_following(username)
+        users = recomend_user_based_on_following(username)
         
-        return jsonify(recomended_users=movies), 200
+        return jsonify(recomended_users=users), 200

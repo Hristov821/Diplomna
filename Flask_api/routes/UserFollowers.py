@@ -15,6 +15,7 @@ class UserFollowers(MethodView):
 
         if current_username is not None:
             relationship = check_if_user_follows_user(current_username, username)
+            print(relationship)
             return jsonify(user_follows=relationship)
         
         followers = get_followers(username)

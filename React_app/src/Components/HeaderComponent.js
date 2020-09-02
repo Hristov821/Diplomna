@@ -24,7 +24,7 @@ const HeaderComponent = ({ global_state, update_global_state }) => {
                             <Menu.Item key="movie_card" onClick={() => { redirect('/movie_card') }}>List Movies</Menu.Item>
                             <Menu.Item key="list_users" onClick={() => { redirect('/list_users') }}>List Users</Menu.Item>
                             <Menu.Item key="followers_based_recomendatation" onClick={() => { redirect('/followers_based_recomendatation') }}>Followers movie recomendation</Menu.Item>
-                            <Menu.Item key="user_recomendation" onClick={() => { redirect('/user_recomendation') }}>List Users</Menu.Item>
+                            <Menu.Item key="user_recomendation" onClick={() => { redirect('/user_recomendation') }}>People that you may know</Menu.Item>
                             <Menu.Item key="log_out" onClick={() => { log_out() }}>Log Out</Menu.Item>
                         </Menu>
                         case false: return <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['Login']}>

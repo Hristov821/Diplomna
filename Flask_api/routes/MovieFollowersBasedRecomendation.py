@@ -13,6 +13,7 @@ class MovieFollowersBasedRecomendation(MethodView):
             return jsonify({"msg": "Missing username in jwt try to login again"}), 400
 
         movies = recomend_movies_base_on_followers(username)
-        
+        print(username)
+        print(movies)
         return jsonify(movies=movies), 200
     
